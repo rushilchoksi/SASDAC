@@ -61,7 +61,7 @@ require_once('siteConfig.php');
                                                             <div><span id="previous-breach" style="color: #DC2B2B" class="line-rounded-icon"></span> Not contained in previous data breaches</div>
                                                         </div>
 														<div class="mg-top-38px">
-															<input type="submit" value="Create account" data-wait="Please wait..." class="btn-primary width-100 w-button" style="color: #8FC3FF" disabled="disabled">
+															<input type="submit" value="Create account" data-wait="Please wait..." class="btn-primary width-100 w-button" disabled>
 														</div>
 													</div>
 												</div>
@@ -138,7 +138,10 @@ require_once('siteConfig.php');
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js"></script>
 		<script src="assets/js/main.js" type="text/javascript"></script>
         <script>
+			var passwordsMatch = false, charLength = false, charCombination = false, sequentialChar = false, noUsername = false, englishDict = false, passwordBreach = false;
+
             $('input[type=password][name=passwordOne]').on('keyup', function() {
+				console.log("\npasswordsMatch: " + passwordsMatch + "\ncharLength: " + charLength + "\ncharCombination: " + charCombination + "\nsequentialChar: " + sequentialChar + "\nnoUsername: " + noUsername + "\nenglishDict: " + englishDict + "\npasswordBreach: " + passwordBreach);
 				var passwordValidationRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/;
 				var passwordOne = $('input[type=password][name=passwordOne]').val();
 				var passwordTwo = $('input[type=password][name=passwordTwo]').val();
@@ -147,10 +150,12 @@ require_once('siteConfig.php');
 				// Password match validation
 				if (passwordOne.length > 0) {
                     if (passwordOne == passwordTwo) {
+						passwordsMatch = true;
                         $('#password-match').html('');
                         $('#password-match').css('color', '#05C168');
                     }
                     else {
+						passwordsMatch = false;
                         $('#password-match').html('');
                         $('#password-match').css('color', '#DC2B2B');
                     }
@@ -158,47 +163,69 @@ require_once('siteConfig.php');
                 
 				// Password character length validation
                 if (passwordOne.length >= 12) {
+					charLength = true;
                     $('#12-char').html('');
                     $('#12-char').css('color', '#05C168');
                 }
                 else {
+					charLength = false;
                     $('#12-char').html('');
                     $('#12-char').css('color', '#DC2B2B');
                 }
 
 				// One uppercase, one lowercase and one numeric character validation
 				if (passwordValidationRegex.test(passwordOne) == true) {
+					charCombination = true;
 					$('#char-comb').html('');
                 	$('#char-comb').css('color', '#05C168');
 				}
 				else {
+					charCombination = false;
                     $('#char-comb').html('');
                     $('#char-comb').css('color', '#DC2B2B');
                 }
 
 				// No repetitive or sequential characters validation
-				if (/(.)\1\1/.test(passwordOne) == false) {
-                    $('#sequential-char').html('');
-                    $('#sequential-char').css('color', '#05C168');
-                }
-                else {
-                    $('#sequential-char').html('');
-                    $('#sequential-char').css('color', '#DC2B2B');
-                }
+				if (passwordOne.length > 0) {
+					if (/(.)\1\1/.test(passwordOne) == false) {
+						sequentialChar = true;
+            	        $('#sequential-char').html('');
+            	        $('#sequential-char').css('color', '#05C168');
+            	    }
+            	    else {
+						sequentialChar = false;
+            	        $('#sequential-char').html('');
+            	        $('#sequential-char').css('color', '#DC2B2B');
+            	    }
+				}
 				
 				// Not contain the user's account name, email or mobile validation
-				if (passwordOne.includes($('input[type=text][name=name]').val(), 0) == false) {
-					console.log($('input[type=text][name=name]').val() + " :: " + passwordOne.includes($('input[type=text][name=name]').val(), 0));
-                    $('#no-username').html('');
-                    $('#no-username').css('color', '#05C168');
-                }
-                else {
-                    $('#no-username').html('');
-                    $('#no-username').css('color', '#DC2B2B');
-                }
+				if (passwordOne.length > 0) {
+					if (passwordOne.includes($('input[type=text][name=name]').val(), 0) == false) {
+						console.log($('input[type=text][name=name]').val() + " :: " + passwordOne.includes($('input[type=text][name=name]').val(), 0));
+						noUsername = true;
+            	        $('#no-username').html('');
+            	        $('#no-username').css('color', '#05C168');
+            	    }
+            	    else {
+						noUsername = false;
+            	        $('#no-username').html('');
+            	        $('#no-username').css('color', '#DC2B2B');
+            	    }
+				}
+
+				if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
+					$('input[type=submit]').prop('disabled', false);
+					$('input[type=submit]').css('background-color', '#144EE3');
+				}
+				else {
+					$('input[type=submit]').prop('disabled', true);
+					$('input[type=submit]').css('background-color', '#1D88FE');
+				}
             });
 
             $('input[type=password][name=passwordTwo]').on('keyup', function() {
+				console.log("\npasswordsMatch: " + passwordsMatch + "\ncharLength: " + charLength + "\ncharCombination: " + charCombination + "\nsequentialChar: " + sequentialChar + "\nnoUsername: " + noUsername + "\nenglishDict: " + englishDict + "\npasswordBreach: " + passwordBreach);
 				var passwordOne = $('input[type=password][name=passwordOne]').val();
 				var passwordTwo = $('input[type=password][name=passwordTwo]').val();
                 $('#password-requirements').css('display', 'block');
@@ -206,10 +233,12 @@ require_once('siteConfig.php');
 				// Password match validation
 				if (passwordOne.length > 0) {
                     if (passwordOne == passwordTwo) {
+						passwordsMatch = true;
                         $('#password-match').html('');
                         $('#password-match').css('color', '#05C168');
                     }
                     else {
+						passwordsMatch = false;
                         $('#password-match').html('');
                         $('#password-match').css('color', '#DC2B2B');
                     }
@@ -217,13 +246,24 @@ require_once('siteConfig.php');
 
 				// Password character length validation
                 if (passwordOne.length >= 12) {
+					charLength = true;
                     $('#12-char').html('');
                     $('#12-char').css('color', '#05C168');
                 }
                 else {
+					charLength = false;
                     $('#12-char').html('');
                     $('#12-char').css('color', '#DC2B2B');
                 }
+
+				if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
+					$('input[type=submit]').prop('disabled', false);
+					$('input[type=submit]').css('background-color', '#144EE3');
+				}
+				else {
+					$('input[type=submit]').prop('disabled', true);
+					$('input[type=submit]').css('background-color', '#1D88FE');
+				}
             });
 
 			var typingTimerOne, typingTimerTwo;
@@ -242,38 +282,64 @@ require_once('siteConfig.php');
 			});
 
 			function englishDictionary() {
-				var passwordOne = $('input[type=password][name=passwordOne]').val();	
-				$.getJSON('https://api.dictionaryapi.dev/api/v2/entries/en/' + passwordOne, function(resultData) {
-					$('#english-dict').html('');
-                    $('#english-dict').css('color', '#DC2B2B');
-				}).fail(function() {
-    				$('#english-dict').html('');
-                	$('#english-dict').css('color', '#05C168');
-  				});
+				var passwordOne = $('input[type=password][name=passwordOne]').val();
+				if (passwordOne.length > 0) {
+					$.getJSON('https://api.dictionaryapi.dev/api/v2/entries/en/' + passwordOne, function(resultData) {
+						englishDict = false;
+						$('#english-dict').html('');
+            	        $('#english-dict').css('color', '#DC2B2B');
+					}).fail(function() {
+						englishDict = true;
+    					$('#english-dict').html('');
+            	    	$('#english-dict').css('color', '#05C168');
+  					});
+
+					if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
+						$('input[type=submit]').prop('disabled', false);
+						$('input[type=submit]').css('background-color', '#144EE3');
+					}
+					else {
+						$('input[type=submit]').prop('disabled', true);
+						$('input[type=submit]').css('background-color', '#1D88FE');
+					}
+				}
 			}
 
 			function passwordBreached() {
 				var breachFlag = false;
 				var passwordOne = $('input[type=password][name=passwordOne]').val();	
-				var execHash = String(CryptoJS.SHA1(passwordOne)).toUpperCase();
-				$.get('https://api.pwnedpasswords.com/range/' + execHash.substring(0,5), function(breachData) {
-					var hashArray = breachData.split('\r\n');
-					for (var i = 0; i < hashArray.length; i++) {
-					    if (execHash.substring(5) == hashArray[i].split(':')[0]) {
-							breachFlag = true;
-							break;
+				if (passwordOne.length > 0) {
+					var execHash = String(CryptoJS.SHA1(passwordOne)).toUpperCase();
+					$.get('https://api.pwnedpasswords.com/range/' + execHash.substring(0,5), function(breachData) {
+						var hashArray = breachData.split('\r\n');
+						for (var i = 0; i < hashArray.length; i++) {
+						    if (execHash.substring(5) == hashArray[i].split(':')[0]) {
+								breachFlag = true;
+								break;
+							}
 						}
-					}
 
-					if (breachFlag == false) {
-                	    $('#previous-breach').html('');
-                	    $('#previous-breach').css('color', '#05C168');
-                	}
-                	else {
-                	    $('#previous-breach').html('');
-                	    $('#previous-breach').css('color', '#DC2B2B');
-                	}
-				});
+						if (breachFlag == false) {
+							passwordBreach = true;
+            	    	    $('#previous-breach').html('');
+            	    	    $('#previous-breach').css('color', '#05C168');
+            	    	}
+            	    	else {
+							passwordBreach = false;
+            	    	    $('#previous-breach').html('');
+            	    	    $('#previous-breach').css('color', '#DC2B2B');
+            	    	}
+
+						if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
+							$('input[type=submit]').prop('disabled', false);
+							$('input[type=submit]').css('background-color', '#144EE3');
+						}
+						else {
+							$('input[type=submit]').prop('disabled', true);
+							$('input[type=submit]').css('background-color', '#1D88FE');
+						}
+					});
+				}
 			}
         </script>
 	</body>
