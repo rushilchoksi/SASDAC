@@ -1,5 +1,17 @@
 <?php
+session_start();
 require_once('siteConfig.php');
+$rsaKey = openssl_pkey_new(array(
+	'digest_alg' => 'sha256',
+	'private_key_bits' => 4096,
+	'private_key_type' => OPENSSL_KEYTYPE_RSA,
+));
+openssl_pkey_export($rsaKey, $privateKey);
+
+$publicKey = openssl_pkey_get_details($rsaKey);
+$publicKey = $publicKey["key"];
+$_SESSION['REGISTER_PUBLIC_KEY'] = $publicKey;
+$_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
 ?>
 <!DOCTYPE html>
 <html data-wf-page="636d8e3e4a3e3c90706d21f8" data-wf-site="63619a386216ae681d93409b" data-wf-status="1">
@@ -137,11 +149,11 @@ require_once('siteConfig.php');
 		<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js"></script>
 		<script src="assets/js/main.js" type="text/javascript"></script>
+		<script src="assets/js/jsencrypt.min.js"></script>
         <script>
 			var passwordsMatch = false, charLength = false, charCombination = false, sequentialChar = false, noUsername = false, englishDict = false, passwordBreach = false;
 
-            $('input[type=password][name=passwordOne]').on('keyup', function() {
-				console.log("\npasswordsMatch: " + passwordsMatch + "\ncharLength: " + charLength + "\ncharCombination: " + charCombination + "\nsequentialChar: " + sequentialChar + "\nnoUsername: " + noUsername + "\nenglishDict: " + englishDict + "\npasswordBreach: " + passwordBreach);
+            $('input[type=password][name=passwordOne]').bind('click keyup', function() {
 				var passwordValidationRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/;
 				var passwordOne = $('input[type=password][name=passwordOne]').val();
 				var passwordTwo = $('input[type=password][name=passwordTwo]').val();
@@ -213,19 +225,9 @@ require_once('siteConfig.php');
             	        $('#no-username').css('color', '#DC2B2B');
             	    }
 				}
-
-				if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
-					$('input[type=submit]').prop('disabled', false);
-					$('input[type=submit]').css('background-color', '#144EE3');
-				}
-				else {
-					$('input[type=submit]').prop('disabled', true);
-					$('input[type=submit]').css('background-color', '#1D88FE');
-				}
             });
 
             $('input[type=password][name=passwordTwo]').on('keyup', function() {
-				console.log("\npasswordsMatch: " + passwordsMatch + "\ncharLength: " + charLength + "\ncharCombination: " + charCombination + "\nsequentialChar: " + sequentialChar + "\nnoUsername: " + noUsername + "\nenglishDict: " + englishDict + "\npasswordBreach: " + passwordBreach);
 				var passwordOne = $('input[type=password][name=passwordOne]').val();
 				var passwordTwo = $('input[type=password][name=passwordTwo]').val();
                 $('#password-requirements').css('display', 'block');
@@ -255,19 +257,10 @@ require_once('siteConfig.php');
                     $('#12-char').html('');
                     $('#12-char').css('color', '#DC2B2B');
                 }
-
-				if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
-					$('input[type=submit]').prop('disabled', false);
-					$('input[type=submit]').css('background-color', '#144EE3');
-				}
-				else {
-					$('input[type=submit]').prop('disabled', true);
-					$('input[type=submit]').css('background-color', '#1D88FE');
-				}
             });
 
 			var typingTimerOne, typingTimerTwo;
-			var englishDictionaryInterval = 1000, passwordBreachedInterval = 1000;
+			var englishDictionaryInterval = 500, passwordBreachedInterval = 500;
 
 			$('input[type=password][name=passwordOne]').on('keyup', function () {
 				clearTimeout(typingTimerOne);
@@ -293,15 +286,6 @@ require_once('siteConfig.php');
     					$('#english-dict').html('');
             	    	$('#english-dict').css('color', '#05C168');
   					});
-
-					if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
-						$('input[type=submit]').prop('disabled', false);
-						$('input[type=submit]').css('background-color', '#144EE3');
-					}
-					else {
-						$('input[type=submit]').prop('disabled', true);
-						$('input[type=submit]').css('background-color', '#1D88FE');
-					}
 				}
 			}
 
@@ -329,18 +313,43 @@ require_once('siteConfig.php');
             	    	    $('#previous-breach').html('');
             	    	    $('#previous-breach').css('color', '#DC2B2B');
             	    	}
-
-						if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
-							$('input[type=submit]').prop('disabled', false);
-							$('input[type=submit]').css('background-color', '#144EE3');
-						}
-						else {
-							$('input[type=submit]').prop('disabled', true);
-							$('input[type=submit]').css('background-color', '#1D88FE');
-						}
 					});
 				}
 			}
+
+			function allowSubmission(){
+				if ((passwordsMatch) && (charLength) && (charCombination) && (sequentialChar) && (noUsername) && (englishDict) && (passwordBreach)) {
+					$('input[type=submit]').prop('disabled', false);
+					$('input[type=submit]').css('color', '#FFFFFF');
+					$('input[type=submit]').css('background-color', '#144EE3');
+				}
+				else {
+					$('input[type=submit]').prop('disabled', true);
+					$('input[type=submit]').css('color', '#EAF4FF');
+					$('input[type=submit]').css('background-color', '#1D88FE');
+				}
+				window.setInterval(allowSubmission, 100);
+			}
+
+			$("form[name=email-form]").submit(function(event) {
+				event.preventDefault();
+				var encryptionObject = new JSEncrypt();
+                encryptionObject.setPublicKey(`<?php echo $_SESSION['REGISTER_PUBLIC_KEY']; ?>`);
+                var encryptedData = encryptionObject.encrypt($(this).serialize());
+				console.log('Data: ' + $(this).serialize());
+                console.log('\nEncrypted: ' + encryptedData);
+				$.ajax({
+    			    type: "POST",
+    			    url: "verifyAccount.php",
+    			    data: {'data': encryptedData},
+    			    success: function (response) {
+						console.log(response);
+    			    },
+    			    error: function(jqXHR, textStatus, errorThrown) {
+    			       console.log(textStatus, errorThrown);
+    			    }
+    			});
+			});
         </script>
 	</body>
 </html>

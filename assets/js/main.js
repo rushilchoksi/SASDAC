@@ -38369,25 +38369,6 @@
 			t.prop("disabled", !0), n && (e.label = t.val(), t.val(n))
 		}
 
-		function y(t, n) {
-			var r = null;
-			return n = n || {}, t.find(':input:not([type="submit"]):not([type="file"])').each(function(i, o) {
-				var a = e(o),
-					c = a.attr("type"),
-					u = a.attr("data-name") || a.attr("name") || "Field " + (i + 1),
-					s = a.val();
-				if ("checkbox" === c) s = a.is(":checked");
-				else if ("radio" === c) {
-					if (null === n[u] || "string" == typeof n[u]) return;
-					s = t.find('input[name="' + a.attr("name") + '"]:checked').val() || null
-				}
-				"string" == typeof s && (s = e.trim(s)), n[u] = s, r = r || function(e, t, n, r) {
-					var i = null;
-					"password" === t ? i = "Passwords cannot be submitted." : e.attr("required") ? r ? M.test(e.attr("type")) && (h.test(r) || (i = "Please enter a valid email address for: " + n)) : i = "Please fill out the required field: " + n : "g-recaptcha-response" !== n || r || (i = "Please confirm you’re not a robot.");
-					return i
-				}(a, c, u, s)
-			}), r
-		}
 		s.ready = s.design = s.preview = function() {
 			! function() {
 				o = e("html").attr("data-wf-site"), c = "https://webflow.com/api/v1/form/" + o, d && c.indexOf("https://webflow.com") >= 0 && (c = c.replace("https://webflow.com", "https://formdata.webflow.com"));
