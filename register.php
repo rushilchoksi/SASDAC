@@ -2,9 +2,9 @@
 session_start();
 require_once('siteConfig.php');
 $rsaKey = openssl_pkey_new(array(
-	'digest_alg' => 'sha256',
-	'private_key_bits' => 4096,
-	'private_key_type' => OPENSSL_KEYTYPE_RSA,
+	'digest_alg' => $RSA_DIGEST_ALG,
+	'private_key_bits' => $RSA_KEY_BITS,
+	'private_key_type' => $RSA_KEY_TYPE,
 ));
 openssl_pkey_export($rsaKey, $privateKey);
 
@@ -21,10 +21,26 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
 		<link href="assets/css/style.css" rel="stylesheet" type="text/css">
 		<link href="assets/images/favicon.png" rel="shortcut icon" type="image/x-icon">
 		<link href="assets/images/favicon.png" rel="apple-touch-icon">
+		<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 	</head>
 	<body>
 		<div class="page-wrapper flex-vertical">
 			<?php getAuthHeader(); ?>
+			<div data-node-type="commerce-cart-wrapper" style="display: none;" data-open-product="" data-wf-cart-type="modal" class="w-commerce-commercecartwrapper cart-button-wrapper">
+				<div data-node-type="commerce-cart-container-wrapper" class="w-commerce-commercecartcontainerwrapper w-commerce-commercecartcontainerwrapper--cartType-modal cart-wrapper">
+					<div data-node-type="commerce-cart-container" class="w-commerce-commercecartcontainer cart-container">
+						<div class="w-commerce-commercecartheader cart-header">
+							<h4 style="margin-left: auto; margin-right: auto;" class="w-commerce-commercecartheading heading-h5-size">Awaiting request confirmation ...</h4>
+						</div>
+						<div class="w-commerce-commercecartformwrapper cart-form-wrapper">
+							<div class="w-commerce-commercecartemptystate empty-state cart-empty">
+							<img src="assets/images/animation.gif" height="128">
+								<div>Hi there, please wait while we process your request, do not refresh or reload this page</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<section class="section hero pd-0px sign-up---section wf-section">
 				<div class="container-default grow w-container">
 					<div class="w-layout-grid grid-2-columns gap-0 sign-up---main-grid">
@@ -64,7 +80,7 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
                                                     </div>
                                                     <div id="w-node-b9a2ed13-6a3f-ed30-bce7-323c250ca86a-706d21f8">
                                                         <div class="mg-top-16px" id="password-requirements" style="display: none;">
-                                                            <div><span id="password-match" style="color: #DC2B2B" class="line-rounded-icon"></span> Passwords do not match</div>
+                                                            <div><span id="password-match" style="color: #DC2B2B" class="line-rounded-icon"></span> Passwords match</div>
                                                             <div><span id="12-char" style="color: #DC2B2B" class="line-rounded-icon"></span> Minimum 12 characters</div>
                                                             <div><span id="char-comb" style="color: #DC2B2B" class="line-rounded-icon"></span> One uppercase, one lowercase and one numeric character</div>
                                                             <div><span id="english-dict" style="color: #DC2B2B" class="line-rounded-icon"></span> No English dictionary words</div>
@@ -78,30 +94,6 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
 													</div>
 												</div>
 												<div class="divider _40px"></div>
-												<div class="mg-bottom-40px">
-													<div class="buttons-row vertical">
-														<a href="https://www.google.com/" target="_blank" class="btn-primary white icon-btn w-inline-block">
-															<div class="mg-right-12px">
-																<div class="inner-container _29px">
-																	<div class="image-wrapper icon-btn">
-																		<img src="https://assets.website-files.com/63619a386216ae681d93409b/636d86534b49b6393350d31a_icon-1-login-social-media-dataplus-template.svg" loading="eager" class="image icon-btn">
-																	</div>
-																</div>
-															</div>
-															<div>Sign up with Google</div>
-														</a>
-														<a href="https://www.facebook.com/" target="_blank" class="btn-primary white icon-btn w-inline-block">
-															<div class="mg-right-12px">
-																<div class="inner-container _29px">
-																	<div class="image-wrapper icon-btn">
-																		<img src="https://assets.website-files.com/63619a386216ae681d93409b/636d865361df293684897cf5_icon-2-login-social-media-dataplus-template.svg" loading="eager" class="image icon-btn">
-																	</div>
-																</div>
-															</div>
-															<div>Sign up with Facebook</div>
-														</a>
-													</div>
-												</div>
 												<div class="text-center">
 													<div>Already have an account? <a href="sign-in.html" class="text-link default">Sign in</a>
 													</div>
@@ -146,7 +138,6 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
 				<?php getAuthFooter(); ?>
 			</div>
 		</div>
-		<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js"></script>
 		<script src="assets/js/main.js" type="text/javascript"></script>
 		<script src="assets/js/jsencrypt.min.js"></script>
@@ -332,6 +323,7 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
 			}
 
 			$("form[name=email-form]").submit(function(event) {
+				$('.w-commerce-commercecartwrapper').css('display', 'flex');
 				event.preventDefault();
 				var encryptionObject = new JSEncrypt();
                 encryptionObject.setPublicKey(`<?php echo $_SESSION['REGISTER_PUBLIC_KEY']; ?>`);
@@ -343,10 +335,14 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
     			    url: "verifyAccount.php",
     			    data: {'data': encryptedData},
     			    success: function (response) {
-						console.log(response);
+						$('.w-commerce-commercecartwrapper').css('display', 'none');
+						window.location.href = 'confirm';
     			    },
-    			    error: function(jqXHR, textStatus, errorThrown) {
-    			       console.log(textStatus, errorThrown);
+    			    error: function (xhr, ajaxOptions, thrownError) {
+						$('.w-commerce-commercecartwrapper').css('display', 'none');
+						console.log(xhr.status);
+        				console.log(thrownError);
+        				console.log(xhr.responseText);
     			    }
     			});
 			});
