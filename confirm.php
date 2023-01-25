@@ -129,8 +129,6 @@ $_SESSION['CONFIRM_PRIVATE_KEY'] = $privateKey;
 				var encryptionObject = new JSEncrypt();
                 encryptionObject.setPublicKey(`<?php echo $_SESSION['CONFIRM_PUBLIC_KEY']; ?>`);
                 var encryptedData = encryptionObject.encrypt($(this).serialize());
-				console.log('Data: ' + $(this).serialize());
-                console.log('\nEncrypted: ' + encryptedData);
 				$.ajax({
     			    type: "POST",
     			    url: "verifyOTP.php",

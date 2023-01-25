@@ -328,8 +328,6 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
 				var encryptionObject = new JSEncrypt();
                 encryptionObject.setPublicKey(`<?php echo $_SESSION['REGISTER_PUBLIC_KEY']; ?>`);
                 var encryptedData = encryptionObject.encrypt($(this).serialize());
-				console.log('Data: ' + $(this).serialize());
-                console.log('\nEncrypted: ' + encryptedData);
 				$.ajax({
     			    type: "POST",
     			    url: "verifyAccount.php",

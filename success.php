@@ -42,7 +42,7 @@ unset($_SESSION['CONFIRM_PRIVATE_KEY']);
 										</div>
                                         <div class="divider _40px"></div>
 										<div class="text-center">
-											<div>Account activated? <a style="text-decoration: none; color: #144EE3" href="login" class="text-link default">Sign in</a></div>
+											<div>Account activated? <a style="text-decoration: none;" href="login" class="text-link default">Sign in</a></div>
 										</div>
 									</div>
 								</div>
@@ -90,8 +90,6 @@ unset($_SESSION['CONFIRM_PRIVATE_KEY']);
 				var encryptionObject = new JSEncrypt();
                 encryptionObject.setPublicKey(`<?php echo $_SESSION['CONFIRM_PUBLIC_KEY']; ?>`);
                 var encryptedData = encryptionObject.encrypt($(this).serialize());
-				console.log('Data: ' + $(this).serialize());
-                console.log('\nEncrypted: ' + encryptedData);
 				$.ajax({
     			    type: "POST",
     			    url: "verifyOTP.php",
