@@ -1205,7 +1205,8 @@ parse_str($decryptedData, $formData);
 $saltValue = bin2hex(openssl_random_pseudo_bytes(16));
 $hashedPassword = hash_pbkdf2("sha512", $formData["passwordOne"], $saltValue, 1000, 64);
 $encIV = openssl_random_pseudo_bytes(16);
-$_SESSION['USER_IV'] = str_replace('==', '', base64_encode($encIV));
+$_SESSION['USER_IV'] = $encIV;
+$_SESSION['USER_DB_IV'] = str_replace('==', '', base64_encode($encIV));
 $_SESSION['NAME'] = encryptData($formData['name'], $encIV);
 $_SESSION['USER_MOBILE'] = encryptData($formData['mobile'], $encIV);
 $_SESSION['USER_EMAIL'] = encryptData($formData['email'], $encIV);
@@ -1216,7 +1217,7 @@ $dbTimeStamp = encryptData(date('Y-m-d h:i:s'), $encIV);
 // Insert encrypted data to MySQL database
 $DB_CONNECTION = new mysqli($DB_HOSTNAME, $DB_USERNAME, $DB_PASSWORD, $DB_NAME);
 $updateUserAccount = $DB_CONNECTION->prepare("INSERT INTO `users` (`IV`, `Name`, `Mobile`, `Email`, `Salt`, `Password`, `TimeStamp`) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$updateUserAccount->bind_param("sssssss", $_SESSION['USER_IV'], $_SESSION['NAME'], $_SESSION['USER_MOBILE'], $_SESSION['USER_EMAIL'], $_SESSION['USER_PASSWORD_SALT'], $_SESSION['USER_PASSWORD'], $dbTimeStamp);
+$updateUserAccount->bind_param("sssssss", $_SESSION['USER_DB_IV'], $_SESSION['NAME'], $_SESSION['USER_MOBILE'], $_SESSION['USER_EMAIL'], $_SESSION['USER_PASSWORD_SALT'], $_SESSION['USER_PASSWORD'], $dbTimeStamp);
 $updateUserAccount->execute();
 $_SESSION['USER_TABLE_ID'] = mysqli_insert_id($DB_CONNECTION);
 

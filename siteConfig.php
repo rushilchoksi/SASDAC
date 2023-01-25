@@ -18,7 +18,7 @@ $AES_ENCRYPTION_PASSPHRASE = 'v9y$B&E(H+MbQeThWmZq4t7w!z%C*F-J@NcRfUjXn2r5u8x/A?
 $AES_ENCRYPTION_OPTION = OPENSSL_RAW_DATA;
 
 $AES_PRIMARY_ENCRYPTION_ALG = 'AES-256-CTR';
-$AES_PRIMARY_ENCRYPTION_PASSPHRASE = 'JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq';
+$AES_PRIMARY_ENCRYPTION_PASSPHRASE = 'JaNdRgUkX2r5u8x/A?D(G+KbPeShVmYq';
 $AES_PRIMARY_ENCRYPTION_OPTION = OPENSSL_RAW_DATA;
 
 /* EMAIL CREDENTIALS */
@@ -29,12 +29,12 @@ $EMAIL_APP_PASSWORD = 'mdktbxgxcslyrzno';
 
 /* ENCRYPT DATA */
 function encryptData($inputString, $initVector) {
-    return str_replace('=', '', base64_encode(openssl_encrypt($inputString, 'AES-256-CTR', 'JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq', OPENSSL_RAW_DATA, $initVector)));
+    return str_replace('=', '', base64_encode(openssl_encrypt($inputString, 'AES-256-CTR', 'JaNdRgUkX2r5u8x/A?D(G+KbPeShVmYq', OPENSSL_RAW_DATA, $initVector)));
 }
 
 /* DECRYPT DATA */
 function decryptData($encryptedString, $initVector) {
-    return openssl_decrypt(base64_decode($encryptedString), 'AES-256-CTR', 'JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq', OPENSSL_RAW_DATA, base64_decode($initVector));
+    return openssl_decrypt(base64_decode($encryptedString), 'AES-256-CTR', 'JaNdRgUkX2r5u8x/A?D(G+KbPeShVmYq', OPENSSL_RAW_DATA, base64_decode($initVector));
 }
 
 /* GENERATE MESSAGE ID */
