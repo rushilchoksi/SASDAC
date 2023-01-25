@@ -32,6 +32,15 @@ function encryptData($inputString, $initVector){
     return str_replace('=', '', base64_encode(openssl_encrypt($inputString, 'AES-256-CTR', 'JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq', OPENSSL_RAW_DATA, $initVector)));
 }
 
+/* GENERATE MESSAGE ID */
+function getMessageID($msgID = null) {
+    $msgID = $msgID ?? random_bytes(16);
+    assert(strlen($msgID) == 16);
+    $msgID[6] = chr(ord($msgID[6]) & 0x0f | 0x40);
+    $msgID[8] = chr(ord($msgID[8]) & 0x3f | 0x80);
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($msgID), 4)) . '@' . $_SERVER['SERVER_NAME'];
+}
+
 /* SITE HEADER & FOOTER */
 function getAuthHeader(){
     echo '<div data-w-id="d60ddca1-d07c-112f-3c2f-794a5c0af801" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="header-wrapper v2 w-nav">

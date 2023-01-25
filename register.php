@@ -336,7 +336,8 @@ $_SESSION['REGISTER_PRIVATE_KEY'] = $privateKey;
     			    data: {'data': encryptedData},
     			    success: function (response) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
-						window.location.href = 'confirm';
+						// window.location.href = 'confirm';
+						console.log(response);
     			    },
     			    error: function (xhr, ajaxOptions, thrownError) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');

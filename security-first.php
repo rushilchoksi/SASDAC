@@ -4,11 +4,13 @@ require_once('siteConfig.php');
 
 if (!isset($_SESSION['EMAIL_VERIFICATION_OTP']))
 	header('Location: register');
-// else if (!isset($_SESSION['EMAIL_VERIFICATION_OTP_VALID']))
-// {
-//     if ($_SESSION['EMAIL_VERIFICATION_OTP_VALID'] != true)
-//         header('Location: confirm'); 
-// }
+
+if ($_SESSION['EMAIL_VERIFICATION_OTP_VALID'] != true) {
+	echo '<script>alert("The verification code provided is incorrect, please try again!"); window.location.href="confirm";</script>';
+}
+
+unset($_SESSION['CONFIRM_PUBLIC_KEY']);
+unset($_SESSION['CONFIRM_PRIVATE_KEY']);
 
 $rsaKey = openssl_pkey_new(array(
 	'digest_alg' => 'sha256',
@@ -43,7 +45,7 @@ $_SESSION['SECURITY_FIRST_PRIVATE_KEY'] = $privateKey;
 						<div class="w-commerce-commercecartformwrapper cart-form-wrapper">
 							<div class="w-commerce-commercecartemptystate empty-state cart-empty">
 							<img src="assets/images/animation.gif" height="128">
-								<div>Hi there, please wait while we verify your passcode, do not refresh or reload this page</div>
+								<div>Hi there, please wait while we create your account, do not refresh or reload this page</div>
 							</div>
 						</div>
 					</div>
@@ -133,17 +135,15 @@ $_SESSION['SECURITY_FIRST_PRIVATE_KEY'] = $privateKey;
 				$('.w-commerce-commercecartwrapper').css('display', 'flex');
 				event.preventDefault();
 				var encryptionObject = new JSEncrypt();
-                encryptionObject.setPublicKey(`<?php echo $_SESSION['CONFIRM_PUBLIC_KEY']; ?>`);
+                encryptionObject.setPublicKey(`<?php echo $_SESSION['SECURITY_FIRST_PUBLIC_KEY']; ?>`);
                 var encryptedData = encryptionObject.encrypt($(this).serialize());
-				console.log('Data: ' + $(this).serialize());
-                console.log('\nEncrypted: ' + encryptedData);
 				$.ajax({
     			    type: "POST",
-    			    url: "verifyOTP.php",
+    			    url: "createAccount.php",
     			    data: {'data': encryptedData},
     			    success: function (response) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
-						console.log(response);
+						window.location.href = 'success';
     			    },
     			    error: function (xhr, ajaxOptions, thrownError) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
