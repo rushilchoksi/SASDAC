@@ -25,8 +25,8 @@ def decryptData(cipherText, initVector, userPassphrase = AES_PASSPHRASE):
     return cipherValue.decrypt(decodedCipherText).decode()
 
 if __name__ == "__main__":
-    chosenTable, headersList = 'emails', ['ID', 'IV', 'Message ID', 'Recipient\'s Name', 'Email Subject', 'Verification Code', 'TimeStamp']
-    # chosenTable, headersList = 'users', ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Role', 'Status', 'Salt', 'Password', 'Accessed', 'Last Login ID', 'Last Login', 'Security Question #01', 'Security Answer #01', 'Security Question #02', 'Security Answer #02', 'Security Question #03', 'Security Answer #03', 'TimeStamp']
+    chosenTable, headersList, columnList = 'emails', ['ID', 'Message ID', 'Recipient\'s Name', 'Email Subject', 'Verification Code', 'TimeStamp'], ['ID', 'IV', 'messageID', 'recipientName', 'emailSubject', 'emailCode', 'TimeStamp']
+    chosenTable, headersList, columnList = 'users', ['ID', 'Name', 'Mobile', 'Email', 'Role', 'Status', 'TimeStamp'], ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Role', 'Active', 'TimeStamp']
 
     print(f'{getDateTime()}Initiating connection to database ...')
     try:
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     dbCursor = dbConnection.cursor()
-    dbCursor.execute(f'SELECT * FROM `{chosenTable}`;')
+    dbCursor.execute(f'SELECT {", ".join(columnList)} FROM `{chosenTable}`;')
     dbResult = dbCursor.fetchall()
     print(f'{getDateTime()}Retrieved {len(dbResult)} accounts.')
     print(f'{getDateTime()}Initiaing decryption on {len(dbResult)} accounts ...')
@@ -44,7 +44,6 @@ if __name__ == "__main__":
     mainDataList = []
     for userAccount in dbResult:
         userDataList, userIV = [], userAccount[1]
-        print(userAccount)
         for i in userAccount:
             try:
                 userDataList.append(decryptData(i, userIV))

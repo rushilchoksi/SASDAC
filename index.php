@@ -7,6 +7,9 @@ if (isset($_SESSION['USER_AUTH_VALID'])) {
 		header('Location: login');
 	}
 }
+else {
+	header('Location: login');
+}
 ?>
 <!DOCTYPE html>
 <html data-wf-domain="dataplustemplate.webflow.io" data-wf-page="63619a386216ae01ef9340bc" data-wf-site="63619a386216ae681d93409b" data-wf-status="1">
