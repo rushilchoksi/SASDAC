@@ -1,11 +1,11 @@
 <?php
 /* GLOBAL VARIABLES */
-$TITLE_NAME = 'IBM Project';
+$TITLE_NAME = 'SASDAC';
 
 /* DATABASE VARIABLES */
-$DB_HOSTNAME = 'localhost';
-$DB_USERNAME = 'root';
-$DB_PASSWORD = '';
+$DB_HOSTNAME = 'database-1.casd3gz5yehh.us-east-1.rds.amazonaws.com';
+$DB_USERNAME = 'admin';
+$DB_PASSWORD = 'ibmadmin';
 $DB_NAME = 'ibm';
 
 /* ENCRYPTION VARIABLES */
@@ -25,7 +25,7 @@ $AES_PRIMARY_ENCRYPTION_OPTION = OPENSSL_RAW_DATA;
 $EMAIL_HOSTNAME = 'smtp.gmail.com';
 $EMAIL_PORT = 465;
 $EMAIL_USERNAME = 'ibm.project.soc@gmail.com';
-$EMAIL_APP_PASSWORD = 'mdktbxgxcslyrzno';
+$EMAIL_APP_PASSWORD = 'wglufwnzbzmwrdkc';
 
 /* ENCRYPT DATA */
 function encryptData($inputString, $initVector) {
@@ -53,27 +53,51 @@ function getAuthHeader(){
                     <div class="header-content-wrapper">
                         <div class="header-middle center---tablet">
                             <a href="index.html" class="header-logo-link w-nav-brand">
-                                <img src="https://assets.website-files.com/63619a386216ae681d93409b/6361ced8050220282fb340e9_logo-dataplus-template.svg" class="header-logo" />
+                                <img src="assets/images/sasdac.png" class="header-logo" />
                             </a>
                         </div>
                     </div>
                 </div>
-            </div>
-';
+            </div>' . PHP_EOL;
 }
+
+function getMainHeader() {
+    echo '<div data-w-id="296f8093-73a5-a05e-210a-be41bc6222cc" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="header-wrapper w-nav">
+                <div class="container-default w-container">
+                    <div class="dropdown-header-wrapper---bg-copy"></div>
+                    <div class="header-content-wrapper">
+                        <a href="index.html" aria-current="page" class="header-logo-link w-nav-brand w--current">
+                            <img src="assets/images/sasdac.png" alt="Logo - Dataplus X Webflow Template" class="header-logo" />
+                        </a>
+                        <div class="header-right-side">
+                        <a href="#" class="header-nav-link w-inline-block"><div class="custom-icon-font link-icon-left"></div><div class="link-text">Log out</div></a>
+                            <a href="register" class="btn-primary small header-btn-hidde-on-mb w-button">Get started</a>
+                            <div class="hamburger-menu-btn w-nav-button">
+                                <div class="hamburger-menu-wrapper">
+                                    <div class="hamburger-menu-bar top"></div>
+                                    <div class="hamburger-menu-bar bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-wrapper---bg"></div>
+                <div class="header-nav-menu---bg"></div>
+            </div>' . PHP_EOL;
+}
+
 function getAuthFooter(){
     echo '<footer class="footer-wrapper v2">
 					<div class="container-default w-container">
 						<div data-w-id="b4234064-9c46-ece5-3a78-23e2b6487e92" class="footer-bottom text-right text-center---tablet v2">
 							<div class="w-layout-grid footer-bottom---grid">
 								<a id="w-node-b4234064-9c46-ece5-3a78-23e2b6487e94-b6487e90" href="index.html" class="footer-logo-wrapper mg-bottom-0 w-inline-block">
-									<img src="https://assets.website-files.com/63619a386216ae681d93409b/6361ced8050220282fb340e9_logo-dataplus-template.svg" class="footer-logo" />
+									<img src="assets/images/sasdac.png" class="footer-logo" />
 								</a>
 								<p class="mg-bottom-0">IBM Project</p>
 							</div>
 						</div>
 					</div>
-				</footer>
-';
+				</footer>' . PHP_EOL;
 }
 ?>

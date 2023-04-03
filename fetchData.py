@@ -6,9 +6,9 @@ from Cryptodome.Cipher import AES
 from Cryptodome.Util import Counter
 from datetime import datetime, timezone
 
-DB_HOST = 'localhost'
-DB_USER = 'root'
-DB_PASS = ''
+DB_HOST = 'database-1.casd3gz5yehh.us-east-1.rds.amazonaws.com'
+DB_USER = 'admin'
+DB_PASS = 'ibmadmin'
 DB_NAME = 'ibm'
 AES_PASSPHRASE = 'JaNdRgUkX2r5u8x/A?D(G+KbPeShVmYq'
 DATETIME_FORMAT = '%d %b %Y %H:%M:%S'
@@ -25,8 +25,8 @@ def decryptData(cipherText, initVector, userPassphrase = AES_PASSPHRASE):
     return cipherValue.decrypt(decodedCipherText).decode()
 
 if __name__ == "__main__":
-    chosenTable, headersList, columnList = 'emails', ['ID', 'Message ID', 'Recipient\'s Name', 'Email Subject', 'Verification Code', 'TimeStamp'], ['ID', 'IV', 'messageID', 'recipientName', 'emailSubject', 'emailCode', 'TimeStamp']
-    chosenTable, headersList, columnList = 'users', ['ID', 'Name', 'Mobile', 'Email', 'Role', 'Status', 'TimeStamp'], ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Role', 'Active', 'TimeStamp']
+    # chosenTable, headersList, columnList = 'emails', ['ID', 'Message ID', 'Recipient\'s Name', 'Email Subject', 'Verification Code', 'TimeStamp'], ['ID', 'IV', 'messageID', 'recipientName', 'emailSubject', 'emailCode', 'TimeStamp']
+    chosenTable, headersList, columnList = 'users', ['ID', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Status', 'TimeStamp'], ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Active', 'TimeStamp']
 
     print(f'{getDateTime()}Initiating connection to database ...')
     try:
