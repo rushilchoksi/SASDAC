@@ -46,6 +46,22 @@ function getMessageID($msgID = null) {
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($msgID), 4)) . '@' . $_SERVER['SERVER_NAME'];
 }
 
+/* GET IP REPUTATION */
+function getIPReputation($ipAddress)
+{
+    $apiURL = 'https://api.xforce.ibmcloud.com/api/ipr/' . $ipAddress;
+    $authHeader = 'Authorization: Basic MzJlYjI0ODItODhjZi00MzVkLTllY2EtZDE4MmZmNjE2MTQwOmYzMDFkZmE5LWJiOTYtNDNhNi1hZjY1LTQ1NjlhMWFmMTcxMw==';
+    
+    $ipReputationAPI = curl_init();
+    curl_setopt($ipReputationAPI, CURLOPT_URL, $apiURL);
+    curl_setopt($ipReputationAPI, CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ipReputationAPI, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authHeader));
+    $captureResult = curl_exec($ipReputationAPI);
+    curl_close ($ipReputationAPI);
+    
+    return json_decode($captureResult, true)["score"]; 
+}
+
 /* SITE HEADER & FOOTER */
 function getAuthHeader(){
     echo '<div data-w-id="d60ddca1-d07c-112f-3c2f-794a5c0af801" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="header-wrapper v2 w-nav">
