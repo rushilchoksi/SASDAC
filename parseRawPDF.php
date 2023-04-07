@@ -17,9 +17,12 @@ $moduleDataQuery = $DB_CONNECTION->prepare("SELECT * FROM `modules` WHERE `pageN
 $moduleDataQuery->bind_param('s', $pageName);
 $moduleDataQuery->execute();
 $moduleData = $moduleDataQuery->get_result()->fetch_row();
+
+$_SESSION['source'] = $moduleData[3];
+$_SESSION['endpoint'] = $moduleData[2];
 ?>
 <!DOCTYPE html>
-<html data-wf-domain="dataplustemplate.webflow.io" data-wf-page="63619a386216ae2a209340ab" data-wf-site="63619a386216ae681d93409b" data-wf-status="1">
+<html data-wf-page="63619a386216ae2a209340ab" data-wf-site="63619a386216ae681d93409b" data-wf-status="1">
 	<head>
 	<meta charset="utf-8" />
 		<title><?php echo $TITLE_NAME; ?> • Module (<?php echo $moduleData[1]; ?>)</title>
@@ -100,9 +103,7 @@ $moduleData = $moduleDataQuery->get_result()->fetch_row();
 										</div>
 										<p class="w-dyn-bind-empty"></p>
 										<div class="add-to-cart">
-											<form id="invokeAPI" class="w-commerce-commerceaddtocartform add-to-cart---default-state">
-												<input type="hidden" name="source" value="<?php echo $moduleData[3]; ?>">
-												<input type="hidden" name="endpoint" value="<?php echo $moduleData[2]; ?>">
+											<form id="invokeAPI" class="w-commerce-commerceaddtocartform add-to-cart---default-state" method="post" enctype="multipart/form-data">
 												<?php
 												foreach (json_decode($moduleData[4], true) as $tempModule)
 												{
@@ -112,7 +113,7 @@ $moduleData = $moduleDataQuery->get_result()->fetch_row();
 														<div data-wf-sku-bindings="%5B%7B%22from%22%3A%22f_sku_values_3dr%22%2C%22to%22%3A%22optionValues%22%7D%5D" data-commerce-product-sku-values="%7B%228a7ae659e692337f5068f8c0ad9f5951%22%3A%22aa1a224846910fb14484a918f7529412%22%7D" data-node-type="commerce-add-to-cart-option-list" data-commerce-product-id="636ae4783f6c7d0f5318ec82" data-preselect-default-variant="false" class="width-100" role="group">
 															<div role="group">
 																<label for="<?php echo $tempModule["fieldName"]; ?>">Enter <?php echo $tempModule["name"]; ?></label>
-																<input type="text" class="input w-input" maxlength="256" name="<?php echo $tempModule["fieldName"]; ?>" data-name="<?php echo $tempModule["fieldName"]; ?>" placeholder="<?php echo $tempModule["name"]; ?>" id="<?php echo $tempModule["fieldName"]; ?>" required="" />
+																<input type="file" class="input w-input" name="<?php echo $tempModule["fieldName"]; ?>" id="<?php echo $tempModule["fieldName"]; ?>" required="" accept="application/pdf"/>
 															</div>
 														</div>
 													</div>
@@ -121,7 +122,7 @@ $moduleData = $moduleDataQuery->get_result()->fetch_row();
 												}
 												?>
 												<div class="buttons-row vertical">
-													<input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="Adding to cart..." value="Execute <?php echo $moduleData[1]; ?> API" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton btn-primary width-100" />
+													<input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="Adding to cart..." name="submit" value="Execute <?php echo $moduleData[1]; ?> API" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton btn-primary width-100" />
 												</div>
 											</form>
 											<div style="display:none" class="w-commerce-commerceaddtocartoutofstock empty-state card-empty">
@@ -155,24 +156,33 @@ $moduleData = $moduleDataQuery->get_result()->fetch_row();
 			$("#invokeAPI").submit(function(event) {
 				$('.w-commerce-commercecartwrapper').css('display', 'flex');
 				event.preventDefault();
+
+	 			var fileData = $('#filePath').prop('files')[0];
+    			var formData = new FormData();
+    			formData.append('filePath', fileData);
+
 				$.ajax({
     			    type: "POST",
     			    url: "invokeAPI.php",
-    			    data: {'data': $(this).serialize()},
+    			    data: formData,
     			    success: function (response) {
-						var apiResponse = JSON.parse(JSON.parse(response));
-						if (apiResponse.success == false) 
-							alert('An error occurred while processing your request!\n\nError Message: ' + apiResponse.message);
-						else
-							alert('Data processed successfully, the file has been successfully uploaded to the S3 bucket as ' + apiResponse.S3FileName);
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
+                        console.log(response);
+						// var apiResponse = JSON.parse(JSON.parse(response));
+						// if (apiResponse.success == false) 
+						// 	alert('An error occurred while processing your request!\n\nError Message: ' + apiResponse.message);
+						// else
+						// 	alert('Data processed successfully, the file has been successfully uploaded to the S3 bucket.');
     			    },
     			    error: function (xhr, ajaxOptions, thrownError) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
 						console.log(xhr.status);
         				console.log(thrownError);
         				console.log(xhr.responseText);
-    			    }
+    			    },
+        			cache: false,
+        			contentType: false,
+        			processData: false
     			});
 			});
 		</script>

@@ -103,7 +103,7 @@ $_SESSION['endpoint'] = $moduleData[2];
 										</div>
 										<p class="w-dyn-bind-empty"></p>
 										<div class="add-to-cart">
-											<form action="uploadFile" class="w-commerce-commerceaddtocartform add-to-cart---default-state" method="post" enctype="multipart/form-data">
+											<form id="invokeAPI" class="w-commerce-commerceaddtocartform add-to-cart---default-state" method="post" enctype="multipart/form-data">
 												<?php
 												foreach (json_decode($moduleData[4], true) as $tempModule)
 												{
@@ -159,28 +159,29 @@ $_SESSION['endpoint'] = $moduleData[2];
 
 	 			var fileData = $('#filePath').prop('files')[0];
     			var formData = new FormData();
-    			formData.append('file', fileData);
-    			alert(JSON.stringify(formData));
+    			formData.append('filePath', fileData);
 
 				$.ajax({
     			    type: "POST",
-    			    url: "uploadFile.php",
+    			    url: "invokeAPI.php",
     			    data: formData,
     			    success: function (response) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
-						alert(response);
-						// var apiResponse = JSON.parse(JSON.parse(response));
-						// if (apiResponse.success == false) 
-						// 	alert('An error occurred while processing your request!\n\nError Message: ' + apiResponse.message);
-						// else
-						// 	alert('Data processed successfully, the file has been successfully uploaded to the S3 bucket.');
+						var apiResponse = JSON.parse(JSON.parse(response));
+						if (apiResponse.success == false) 
+							alert('An error occurred while processing your request!\n\nError Message: ' + apiResponse.message);
+						else
+							alert('Data processed successfully, the file has been successfully uploaded to the S3 bucket.');
     			    },
     			    error: function (xhr, ajaxOptions, thrownError) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
 						console.log(xhr.status);
         				console.log(thrownError);
         				console.log(xhr.responseText);
-    			    }
+    			    },
+        			cache: false,
+        			contentType: false,
+        			processData: false
     			});
 			});
 		</script>

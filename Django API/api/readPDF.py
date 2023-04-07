@@ -1,15 +1,21 @@
 import time
 import pdfplumber
-from PyPDF2 import PdfFileReader
 from datetime import timedelta
 
 def parseRaw(file_path):
     resumeDataDict = {}
     try:
-        fileReader = PdfFileReader(file_path)
-        page = fileReader.pages[0]
-        resumeDataDict['success'] = True
-        resumeDataDict['data'] = page.extract_text()
+        with pdfplumber.open(file_path) as pdf:
+            resumeDataDict['success'] = True
+            resumeDataDict['pages'] = len(pdf.pages)
+
+            pdfData = ''
+            for pageData in range(resumeDataDict['pages']):
+                tempPageNum = pdf.pages[pageData]
+                pageText = tempPageNum.extract_text()
+                pdfData += pageText
+
+            resumeDataDict['data'] = pdfData
     except FileNotFoundError:
         resumeDataDict['success'] = False
         resumeDataDict['message'] = 'File not found, please try again!'
