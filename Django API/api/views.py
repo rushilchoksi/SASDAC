@@ -22,7 +22,7 @@ def getBillDetails(request):
             else:
                 jsonDataDict = fetchRequiredData(clientID)
                 s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
-                jsonDataDict['S3'] = s3UploadStatus
+                jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
                 return Response(jsonDataDict)
         else:
             return Response({'success': False, 'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
@@ -35,7 +35,7 @@ def parseResumeData(request):
     else:
         jsonDataDict = parseResume(resumeFilePath)
         s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
-        jsonDataDict['S3'] = s3UploadStatus
+        jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     
 @api_view(['GET'])
@@ -46,7 +46,7 @@ def parseRawData(request):
     else:
         jsonDataDict = parseRaw(resumeFilePath)
         s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Raw Data')
-        jsonDataDict['S3'] = s3UploadStatus
+        jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     
 @api_view(['GET'])

@@ -15,7 +15,7 @@ def uploadFile(jsonData, uriEndpoint):
     awsS3Connection = boto3.client("s3", aws_access_key_id = AWS_ACCESS_KEY_ID, aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
     try:
         awsS3Connection.upload_file(outputFile, AWS_S3_BUCKET_NAME, os.path.basename(outputFile))
-        return True
+        return {'Status': True, 'fileName': outputFile}
     except Exception:
         return False
 
