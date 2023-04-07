@@ -1,10 +1,10 @@
 import uploadData
+from parseImage import parseOCR
 from rest_framework import status
 from billDetails import fetchRequiredData
 from readPDF import parseResume, parseRaw
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework.authtoken.models import Token
 
 def getXPATHDetails(webDriver, xPathExpression):
     return webDriver.find_elements(by = By.XPATH, value = xPathExpression)[0].text
@@ -21,8 +21,9 @@ def getBillDetails(request):
                 return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 jsonDataDict = fetchRequiredData(clientID)
-                s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
-                jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+                if jsonDataDict['success']:
+                    s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
+                    jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
                 return Response(jsonDataDict)
         else:
             return Response({'success': False, 'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
@@ -34,8 +35,9 @@ def parseResumeData(request):
         return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         jsonDataDict = parseResume(resumeFilePath)
-        s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
-        jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+        if jsonDataDict['success']:
+            s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
+            jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     
 @api_view(['GET'])
@@ -45,11 +47,19 @@ def parseRawData(request):
         return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         jsonDataDict = parseRaw(resumeFilePath)
-        s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Raw Data')
-        jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+        if jsonDataDict['success']:
+            s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Raw Data')
+            jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
-    
+
 @api_view(['GET'])
-def getCredentials(request):
-    token = Token.objects.create(user = 'Rushil Choksi')
-    print(token.key)
+def parseOCRData(request):
+    imageFilePath = request.query_params.get('filePath')
+    if imageFilePath == None:
+        return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        jsonDataDict = parseOCR(imageFilePath)
+        if jsonDataDict['success']:
+            s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse OCR Data')
+            jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+        return Response(jsonDataDict)

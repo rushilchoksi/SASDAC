@@ -171,7 +171,7 @@ $_SESSION['endpoint'] = $moduleData[2];
 						if (apiResponse.success == false) 
 							alert('An error occurred while processing your request!\n\nError Message: ' + apiResponse.message);
 						else
-							alert('Data processed successfully, the file has been successfully uploaded to the S3 bucket.');
+							alert('Data processed successfully, the file has been successfully uploaded to the S3 bucket as ' + apiResponse.S3FileName);
     			    },
     			    error: function (xhr, ajaxOptions, thrownError) {
 						$('.w-commerce-commercecartwrapper').css('display', 'none');
