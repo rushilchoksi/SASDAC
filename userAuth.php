@@ -56,6 +56,7 @@ if ($validUser == true)
         if ($ipReputationScore <= 1)
         {
             $_SESSION['USER_NAME'] = $userName;
+            $_SESSION['USER_EMAIL'] = $formData['email'];
             $_SESSION['USER_AUTH_VERIFICATION_OTP'] = strtoupper(bin2hex(openssl_random_pseudo_bytes(16)));
             $_SESSION['USER_AUTH_VERIFICATION_OTP_IV'] = openssl_random_pseudo_bytes(16);
             $_SESSION['USER_AUTH_OTP_REQUEST_TIME'] = time();
