@@ -20,10 +20,15 @@ def getBillDetails(request):
             if clientID == None:
                 return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                jsonDataDict = fetchRequiredData(clientID)
-                if jsonDataDict['success']:
-                    s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
-                    jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+                otherParams = request.query_params.get('otherParams')
+                if otherParams == None:
+                    jsonDataDict = fetchRequiredData(clientID, 'ALL')
+                else:
+                    print(f'27: {otherParams}')
+                    jsonDataDict = fetchRequiredData(clientID, otherParams)
+                # if jsonDataDict['success']:
+                # s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
+                # jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
                 return Response(jsonDataDict)
         else:
             return Response({'success': False, 'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
@@ -34,10 +39,14 @@ def parseResumeData(request):
     if resumeFilePath == None:
         return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        jsonDataDict = parseResume(resumeFilePath)
-        if jsonDataDict['success']:
-            s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
-            jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+        otherParams = request.query_params.get('otherParams')
+        if otherParams == None:
+            jsonDataDict = parseResume(resumeFilePath, 'ALL')
+        else:
+            jsonDataDict = parseResume(resumeFilePath, otherParams)
+            if jsonDataDict['success']:
+                s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
+                jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     
 @api_view(['GET'])

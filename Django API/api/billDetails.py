@@ -1,7 +1,9 @@
 import time
+import base64
 import traceback
 from selenium import webdriver
 from datetime import timedelta
+from urllib.parse import unquote
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -9,7 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 def getXPATHDetails(webDriver, xPathExpression):
     return webDriver.find_elements(by = By.XPATH, value = xPathExpression)[0].text
 
-def fetchRequiredData(clientID):
+def fetchRequiredData(clientID, otherParams):
     driverOptions = webdriver.ChromeOptions()
     driverOptions.add_argument("--headless")
     webDriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=driverOptions)
@@ -174,6 +176,18 @@ def fetchRequiredData(clientID):
                 'litigationArrear': litigationArrears
             }
         }
+
+        if otherParams != 'ALL':
+            print(f'181: {otherParams}')
+            newJSONData = {}
+            decodedString = unquote(base64.b64decode(otherParams).decode("utf-8"))
+            attributesList = decodedString.replace('attributesNeeded[]=', '').split('&')
+            for tempKey in jsonDataDict.keys():
+                if tempKey in attributesList:
+                    newJSONData[tempKey] = jsonDataDict.get(tempKey)
+
+            jsonDataDict = newJSONData
+
         webDriver.quit()
         return jsonDataDict
     except Exception:
