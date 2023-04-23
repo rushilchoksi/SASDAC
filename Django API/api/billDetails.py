@@ -178,8 +178,7 @@ def fetchRequiredData(clientID, otherParams):
         }
 
         if otherParams != 'ALL':
-            print(f'181: {otherParams}')
-            newJSONData = {}
+            newJSONData = {'success': True}
             decodedString = unquote(base64.b64decode(otherParams).decode("utf-8"))
             attributesList = decodedString.replace('attributesNeeded[]=', '').split('&')
             for tempKey in jsonDataDict.keys():

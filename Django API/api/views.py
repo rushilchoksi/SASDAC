@@ -24,11 +24,11 @@ def getBillDetails(request):
                 if otherParams == None:
                     jsonDataDict = fetchRequiredData(clientID, 'ALL')
                 else:
-                    print(f'27: {otherParams}')
                     jsonDataDict = fetchRequiredData(clientID, otherParams)
-                # if jsonDataDict['success']:
-                # s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
-                # jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+                
+                if jsonDataDict['success']:
+                    s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Get Bill Details')
+                    jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
                 return Response(jsonDataDict)
         else:
             return Response({'success': False, 'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
