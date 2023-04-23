@@ -121,6 +121,36 @@ $_SESSION['endpoint'] = $moduleData[2];
 												<?php
 												}
 												?>
+												<?php
+												if ($moduleData[5] != null)
+												{
+												?>
+												<div class="mg-bottom-16px keep">
+													<div class="flex-horizontal">
+														<div data-wf-sku-bindings="%5B%7B%22from%22%3A%22f_sku_values_3dr%22%2C%22to%22%3A%22optionValues%22%7D%5D" data-commerce-product-sku-values="%7B%228a7ae659e692337f5068f8c0ad9f5951%22%3A%22aa1a224846910fb14484a918f7529412%22%7D" data-node-type="commerce-add-to-cart-option-list" data-commerce-product-id="636ae4783f6c7d0f5318ec82" data-preselect-default-variant="false" class="width-100" role="group">
+															<div role="group">
+																<label for="<?php echo $tempModule["fieldName"]; ?>">Choose attributes</label>
+																<?php
+																$tempCounter = 0;
+																foreach (json_decode($moduleData[5], true)['attributes'] as $tempAttribute)
+																{
+																?>
+																	<label class="w-checkbox checkbox-field-wrapper small bottom-24px">
+																		<div class="w-checkbox-input w-checkbox-input--inputType-custom checkbox small" id="<?php echo $tempCounter; ?>"></div>
+																		<input type="checkbox" name="attributesNeeded[]" style="opacity:0;position:absolute;z-index:-1" data-node-type="attributesNeeded<?php echo $tempCounter; ?>" value="<?php echo $tempAttribute; ?>"/>
+																		<span class="w-form-label" for="checkbox"><?php echo $tempAttribute; ?></span>
+																	</label>
+																<?php
+																$tempCounter += 1;
+																}
+																?>
+															</div>
+														</div>
+													</div>
+												</div>
+												<?php
+												}
+												?>
 												<div class="buttons-row vertical">
 													<input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="Adding to cart..." name="submit" value="Execute <?php echo $moduleData[1]; ?> API" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton btn-primary width-100" />
 												</div>
@@ -153,10 +183,28 @@ $_SESSION['endpoint'] = $moduleData[2];
 		<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 		<script src="assets/js/file.js" type="text/javascript"></script>
 		<script>
+			function setCookie(name, value, days) {
+			    var expires = "";
+			    if (days) {
+			        var date = new Date();
+			        date.setTime(date.getTime() + (days*24*60*60*1000));
+			        expires = "; expires=" + date.toUTCString();
+			    }
+			    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+			}
+
+			$('input[type=checkbox]').on('click', function() {
+				var toggleElement = $(this).attr('data-node-type').replace('attributesNeeded','');
+				if ($('#' + toggleElement).hasClass('w--redirected-checked'))
+					$('#' + toggleElement).removeClass('w--redirected-checked');
+				else 
+					$('#' + toggleElement).addClass('w--redirected-checked');
+			});
+
 			$("#invokeAPI").submit(function(event) {
 				$('.w-commerce-commercecartwrapper').css('display', 'flex');
 				event.preventDefault();
-
+				setCookie('params', btoa($(this).serialize()), 1);
 	 			var fileData = $('#filePath').prop('files')[0];
     			var formData = new FormData();
     			formData.append('filePath', fileData);
