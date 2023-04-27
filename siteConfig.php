@@ -3,10 +3,15 @@
 $TITLE_NAME = 'SASDAC';
 
 /* DATABASE VARIABLES */
-$DB_HOSTNAME = 'database-1.casd3gz5yehh.us-east-1.rds.amazonaws.com';
+$DB_HOSTNAME = 'database.ckfocdco2ijl.us-east-1.rds.amazonaws.com';
 $DB_USERNAME = 'admin';
-$DB_PASSWORD = 'ibmadmin';
+$DB_PASSWORD = 'Wm00z1i1UBNSUOfJVAv4';
 $DB_NAME = 'ibm';
+
+/* AWS S3 CREDENTIALS */
+$AWS_BUCKET_NAME = 'ibm.bucket';
+$AWS_ACCESS_KEY_ID = 'AKIAZPBI5D7RFAD7KVEF';
+$AWS_SECRET_ACCESS_KEY = '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';
 
 /* ENCRYPTION VARIABLES */
 $RSA_DIGEST_ALG = 'SHA256';

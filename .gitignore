@@ -1,3 +1,6 @@
 uploads/
 */__pycache__/
-*.py[cod]
+*.pyc
+fetchData.py
+encryptData.php
+newPassword.php
