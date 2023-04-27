@@ -25,7 +25,6 @@ openssl_private_decrypt(base64_decode($encryptedString), $decryptedData, $res);
 $formData = array();
 parse_str($decryptedData, $formData);
 
-var_dump($formData);
 $DB_CONNECTION = new mysqli($DB_HOSTNAME, $DB_USERNAME, $DB_PASSWORD, $DB_NAME);
 $updateUserAccount = $DB_CONNECTION->query("SELECT `ID`, `IV`, `Name`, `Mobile`, `Email`, `Role`, `Active`, `Salt`, `Password`, `accessCount` FROM `users`;");
 $dbUsers = $updateUserAccount->fetch_all();
@@ -50,7 +49,7 @@ if ($validUser == true)
     $userRole = decryptData($userAccount[5], $userAccount[1]);
     if ($userAccount[6] == 1) 
     {
-        $ipAddress = json_decode(file_get_contents("https://httpbin.org/ip"), true)['origin'];
+        $ipAddress = json_decode(file_get_contents("https://api.ipify.org/?format=json"), true)['ip'];
         $ipReputationScore = getIPReputation($ipAddress);
 
         if ($ipReputationScore <= 1)
@@ -70,7 +69,7 @@ if ($validUser == true)
             $emailMsg = $browserData["browser_name"] . " on " . $browserData["os_title"];
     
             // Invoke geo-location API
-            $userIPAddress = json_decode(file_get_contents("https://httpbin.org/ip"), true)["origin"];
+            $userIPAddress = json_decode(file_get_contents("https://api.ipify.org/?format=json"), true)["ip"];
             $geoLocationAPIURL = json_decode(file_get_contents("http://ip-api.com/json/$userIPAddress"), true);
             $countryName = $geoLocationAPIURL["country"];
             $regionName = $geoLocationAPIURL["regionName"];
@@ -164,7 +163,7 @@ if ($validUser == true)
     }
     else 
     {
-        $ipAddress = json_decode(file_get_contents("https://httpbin.org/ip"), true)['origin'];
+        $ipAddress = json_decode(file_get_contents("https://api.ipify.org/?format=json"), true)['ip'];
         $ipReputationScore = getIPReputation($ipAddress);
 
         // Encrypt login data prior to log creation
@@ -188,7 +187,7 @@ if ($validUser == true)
 }
 else 
 {
-    $ipAddress = json_decode(file_get_contents("https://httpbin.org/ip"), true)['origin'];
+    $ipAddress = json_decode(file_get_contents("https://api.ipify.org/?format=json"), true)['ip'];
     $ipReputationScore = getIPReputation($ipAddress);
     
     // Encrypt login data prior to log creation
