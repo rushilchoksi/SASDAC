@@ -2,6 +2,7 @@ import uploadData
 from parseImage import parseOCR
 from rest_framework import status
 from serveData import serveEndpoint
+from django.shortcuts import redirect
 from billDetails import fetchRequiredData
 from readPDF import parseResume, parseRaw
 from rest_framework.response import Response
@@ -46,8 +47,10 @@ def parseResumeData(request):
         else:
             jsonDataDict = parseResume(resumeFilePath, otherParams)
         
+        print('\n50:', jsonDataDict)
         if jsonDataDict['success']:
             s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
+            print(f'53: {s3UploadStatus}')
             jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     
@@ -86,4 +89,4 @@ def serveFile(request):
             return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_403_FORBIDDEN)
         
         apiResponse = serveEndpoint(authToken, fileName)
-        return Response(apiResponse)
+        return redirect(apiResponse['endpointURL'])

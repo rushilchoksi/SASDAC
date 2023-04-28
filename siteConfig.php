@@ -33,7 +33,8 @@ $EMAIL_USERNAME = 'ibm.project.soc@gmail.com';
 $EMAIL_APP_PASSWORD = 'wglufwnzbzmwrdkc';
 
 /* ADDITIONAL CONFIG */
-$SERVE_S3_FILE_ENDPOINT = 'http://localhost/ibm/serveFile?fileName=';
+$SERVE_S3_FILE_ENDPOINT = 'http://127.0.0.1:8000/api/serveFile?authToken=SmFOZFJnVWtYMnI1dTh4L0E/RChHK0tiUGVTaFZtWXE&fileName=';
+$SHARED_DIRECTORY_PATH = "/Applications/XAMPP/xamppfiles/htdocs/ibm/uploads";
 
 /* ENCRYPT DATA */
 function encryptData($inputString, $initVector) {

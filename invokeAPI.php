@@ -87,8 +87,7 @@ else if (in_array($_SESSION['source'], $endpointSources))
 {
     if (isset($_COOKIE['params']))
         $otherParameters = $_COOKIE['params'];
-    $targetDir = "/Applications/XAMPP/xamppfiles/htdocs/ibm/uploads/";
-    $targetFile = $targetDir . str_replace(" ", "_", basename($_FILES["filePath"]["name"]));
+    $targetFile = $SHARED_DIRECTORY_PATH . "/" . str_replace(" ", "_", basename($_FILES["filePath"]["name"]));
     $imageFileType = strtolower(pathinfo($targetFile,PATHINFO_EXTENSION));
 
     if (move_uploaded_file($_FILES["filePath"]["tmp_name"], $targetFile))

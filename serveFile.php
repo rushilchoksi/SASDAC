@@ -19,26 +19,10 @@ else {
 
 if (isset($_GET['fileName'])) {
     $fileName = urldecode(base64_decode($_GET['fileName']));
-	$s3Client = new S3Client([
-		'version' => 'latest',
-		'region' => 'us-east-1',
-		'credentials' => [
-			'key' => $AWS_ACCESS_KEY_ID,
-			'secret' => $AWS_SECRET_ACCESS_KEY,
-		],
-	]);
-	
-	try {
-		$result = $s3Client->getObject([
-			'Bucket' => $AWS_BUCKET_NAME,
-			'Key' => $fileName,
-		]);
-	
-		header("Content-Disposition: attachment; filename = $fileName");
-    	echo $result['Body'];
-	} catch (S3Exception $e) {
-		echo "Error getting file from S3: " . $e->getMessage();
-	}
+    header('Content-Type: application/force-download');
+    header("Content-Disposition: attachment; filename=\"" . basename($fileName) . "\";");
+	header('Content-Length: ' . filesize($SHARED_DIRECTORY_PATH . "/" . $fileName));
+    readfile($SHARED_DIRECTORY_PATH . "/" . $fileName);
 }
 else {
     echo "You are not authorized to access this resource.";
