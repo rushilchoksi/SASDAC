@@ -1,4 +1,3 @@
-import os
 import json
 import time
 import boto3
@@ -14,7 +13,6 @@ def uploadFile(jsonData, uriEndpoint):
         json.dump(jsonData, jsonFile)
 
     awsS3Connection = boto3.client("s3", aws_access_key_id = AWS_ACCESS_KEY_ID, aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
-    print(awsS3Connection)
     try:
         awsS3Connection.upload_file(outputFile, AWS_S3_BUCKET_NAME, os.path.basename(outputFile))
         return {'Status': True, 'fileName': outputFile}

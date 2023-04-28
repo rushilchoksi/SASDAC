@@ -1,6 +1,7 @@
 import uploadData
 from parseImage import parseOCR
 from rest_framework import status
+from serveData import serveEndpoint
 from billDetails import fetchRequiredData
 from readPDF import parseResume, parseRaw
 from rest_framework.response import Response
@@ -44,9 +45,10 @@ def parseResumeData(request):
             jsonDataDict = parseResume(resumeFilePath, 'ALL')
         else:
             jsonDataDict = parseResume(resumeFilePath, otherParams)
-            if jsonDataDict['success']:
-                s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
-                jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
+        
+        if jsonDataDict['success']:
+            s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
+            jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     
 @api_view(['GET'])
@@ -72,3 +74,16 @@ def parseOCRData(request):
             s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse OCR Data')
             jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
+
+@api_view(['GET'])
+def serveFile(request):
+    authToken = request.query_params.get('authToken')
+    if authToken == None:
+        return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_403_FORBIDDEN)
+    else:
+        fileName = request.query_params.get('fileName')
+        if fileName == None:
+            return Response({'success': False, 'error': 'Missing endpoint parameters'}, status=status.HTTP_403_FORBIDDEN)
+        
+        apiResponse = serveEndpoint(authToken, fileName)
+        return Response(apiResponse)

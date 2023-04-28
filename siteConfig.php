@@ -32,6 +32,9 @@ $EMAIL_PORT = 465;
 $EMAIL_USERNAME = 'ibm.project.soc@gmail.com';
 $EMAIL_APP_PASSWORD = 'wglufwnzbzmwrdkc';
 
+/* ADDITIONAL CONFIG */
+$SERVE_S3_FILE_ENDPOINT = 'http://localhost/ibm/serveFile?fileName=';
+
 /* ENCRYPT DATA */
 function encryptData($inputString, $initVector) {
     return str_replace('=', '', base64_encode(openssl_encrypt($inputString, 'AES-256-CTR', 'JaNdRgUkX2r5u8x/A?D(G+KbPeShVmYq', OPENSSL_RAW_DATA, $initVector)));

@@ -138,6 +138,19 @@ if ($validUser == true)
             $updateUserAccount->bind_param("ssi", $newAccessCount, $encUserTimeStamp, $tempUserID);
             $updateUserAccount->execute();
 
+            // Store session information for Django API
+            $filePath = $_SERVER['DOCUMENT_ROOT'] . "/ibm/uploads/sessionData.json";
+            @$filePointer = fopen($filePath, 'w+');
+            if (!$filePointer) {
+                echo "<p>Apologies</p>";
+                exit;
+            }
+            flock($filePointer, LOCK_EX);
+            fwrite($filePointer, json_encode(['sessionID' => $_COOKIE['PHPSESSID']]), strlen(json_encode(['sessionID' => $_COOKIE['PHPSESSID']])));
+            flock($filePointer, LOCK_UN);
+            fflush($filePointer);
+            fclose($filePointer);
+            
             $_SESSION['AUTH_VALID'] = true;
         }
         else
