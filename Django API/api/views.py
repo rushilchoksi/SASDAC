@@ -47,10 +47,8 @@ def parseResumeData(request):
         else:
             jsonDataDict = parseResume(resumeFilePath, otherParams)
         
-        print('\n50:', jsonDataDict)
         if jsonDataDict['success']:
             s3UploadStatus = uploadData.uploadFile(jsonDataDict, 'Parse Resume Data')
-            print(f'53: {s3UploadStatus}')
             jsonDataDict['S3'], jsonDataDict['S3FileName'] = s3UploadStatus['Status'], s3UploadStatus['fileName']
         return Response(jsonDataDict)
     

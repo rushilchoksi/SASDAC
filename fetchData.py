@@ -26,7 +26,8 @@ def decryptData(cipherText, initVector, userPassphrase = AES_PASSPHRASE):
 
 if __name__ == "__main__":
     # chosenTable, headersList, columnList = 'emails', ['ID', 'Message ID', 'Recipient\'s Name', 'Email Subject', 'Verification Code', 'TimeStamp'], ['ID', 'IV', 'messageID', 'recipientName', 'emailSubject', 'emailCode', 'TimeStamp']
-    chosenTable, headersList, columnList = 'users', ['ID', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Status', 'TimeStamp'], ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Active', 'TimeStamp']
+    # chosenTable, headersList, columnList = 'users', ['ID', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Status', 'TimeStamp'], ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Active', 'TimeStamp']
+    chosenTable, headersList, columnList = 'logins', ['ID', 'IV', 'Name', 'Email', 'ipAddress', 'Score', 'Status', 'TimeStamp'], ['ID', 'IV', 'Name', 'Mobile', 'Email', 'Salt', 'Role', 'Active', 'TimeStamp']
 
     print(f'{getDateTime()}Initiating connection to database ...')
     try:
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     dbCursor = dbConnection.cursor()
-    dbCursor.execute(f'SELECT {", ".join(columnList)} FROM `{chosenTable}`;')
+    dbCursor.execute(f'SELECT * FROM `{chosenTable}`;')
     dbResult = dbCursor.fetchall()
     print(f'{getDateTime()}Retrieved {len(dbResult)} accounts.')
     print(f'{getDateTime()}Initiaing decryption on {len(dbResult)} accounts ...')
